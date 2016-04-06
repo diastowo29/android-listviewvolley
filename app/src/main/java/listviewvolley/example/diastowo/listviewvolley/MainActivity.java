@@ -3,9 +3,12 @@ package listviewvolley.example.diastowo.listviewvolley;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -97,6 +100,15 @@ public class MainActivity extends AppCompatActivity {
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(movieReq);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.v(TAG, "Item Clicked at: "+ movieList.get(position).getTitle()
+                        + "Rating : " + movieList.get(position).getRating()
+                        + "Year : " + movieList.get(position).getYear());
+            }
+        });
     }
     @Override
     public void onDestroy() {
