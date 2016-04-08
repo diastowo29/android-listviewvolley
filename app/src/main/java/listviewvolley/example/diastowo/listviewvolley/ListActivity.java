@@ -1,13 +1,13 @@
 package listviewvolley.example.diastowo.listviewvolley;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -27,9 +27,13 @@ import listviewvolley.example.diastowo.listviewvolley.adapter.CustomListAdapter;
 import listviewvolley.example.diastowo.listviewvolley.app.AppController;
 import listviewvolley.example.diastowo.listviewvolley.model.Movie;
 
-public class MainActivity extends AppCompatActivity {
+public class ListActivity extends Fragment {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    public ListActivity (){
+
+    }
+
+    private static final String TAG = ListActivity.class.getSimpleName();
 
     //movies json url
     private static final String  url = "http://api.androidhive.info/json/movies.json";
@@ -39,9 +43,90 @@ public class MainActivity extends AppCompatActivity {
     private CustomListAdapter adapter;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootview = inflater.inflate(R.layout.fragment_list, container, false);
+        listView = (ListView) rootview.findViewById(R.id.list);
+        adapter = new CustomListAdapter(getActivity(), movieList);
+        listView.setAdapter(adapter);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        //create volley request obj
+        JsonArrayRequest movieReq = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                Log.d(TAG, jsonArray.toString());
+                hidePDialog();
+
+                // Parsing json
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        Movie movie = new Movie();
+                        movie.setTitle(obj.getString("title"));
+                        movie.setThumbnailUrl(obj.getString("image"));
+                        movie.setRating(((Number) obj.get("rating"))
+                                .doubleValue());
+                        movie.setYear(obj.getInt("releaseYear"));
+
+                        // Genre is json array
+                        JSONArray genreArry = obj.getJSONArray("genre");
+                        ArrayList<String> genre = new ArrayList<String>();
+                        for (int j = 0; j < genreArry.length(); j++) {
+                            genre.add((String) genreArry.get(j));
+                        }
+                        movie.setGenre(genre);
+
+                        // adding movie to movies array
+                        movieList.add(movie);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                // notifying list adapter about data changes
+                // so that it renders the list view with updated data
+                adapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                VolleyLog.d(TAG, "Error: " + volleyError.getMessage());
+                hidePDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(movieReq);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.v(TAG, "Item Clicked at: " + movieList.get(position).getTitle() + " "
+                        + "Rating : " + movieList.get(position).getRating() + " "
+                        + "Year : " + movieList.get(position).getYear());
+            }
+        });
+
+
+        return rootview;
+    }
+
+/*
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_list);
 
         listView = (ListView) findViewById(R.id.list);
         adapter = new CustomListAdapter(this, movieList);
@@ -104,12 +189,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v(TAG, "Item Clicked at: "+ movieList.get(position).getTitle()
-                        + "Rating : " + movieList.get(position).getRating()
+                Log.v(TAG, "Item Clicked at: "+ movieList.get(position).getTitle()+" "
+                        + "Rating : " + movieList.get(position).getRating()+" "
                         + "Year : " + movieList.get(position).getYear());
             }
         });
     }
+*/
     @Override
     public void onDestroy() {
         super.onDestroy();
