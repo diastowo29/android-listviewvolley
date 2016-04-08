@@ -1,6 +1,5 @@
 package listviewvolley.example.diastowo.listviewvolley;
 
-import android.app.Application;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +32,8 @@ public class ViewPagerAct extends AppCompatActivity {
     }
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ListActivity(), "ONE");
-        adapter.addFragment(new GridActivity(), "TWO");
+        adapter.addFragment(new ListFragment(), "List");
+        adapter.addFragment(new GridFragment(), "Grid");
         viewPager.setAdapter(adapter);
     }
 

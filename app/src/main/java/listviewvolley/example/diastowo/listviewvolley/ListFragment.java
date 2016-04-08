@@ -27,13 +27,13 @@ import listviewvolley.example.diastowo.listviewvolley.adapter.CustomListAdapter;
 import listviewvolley.example.diastowo.listviewvolley.app.AppController;
 import listviewvolley.example.diastowo.listviewvolley.model.Movie;
 
-public class ListActivity extends Fragment {
+public class ListFragment extends Fragment {
 
-    public ListActivity (){
+    public ListFragment(){
 
     }
 
-    private static final String TAG = ListActivity.class.getSimpleName();
+    private static final String TAG = ListFragment.class.getSimpleName();
 
     //movies json url
     private static final String  url = "http://api.androidhive.info/json/movies.json";

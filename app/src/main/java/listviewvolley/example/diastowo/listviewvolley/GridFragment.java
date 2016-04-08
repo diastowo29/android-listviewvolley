@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,16 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import listviewvolley.example.diastowo.listviewvolley.adapter.CustomGridAdapter;
-import listviewvolley.example.diastowo.listviewvolley.adapter.CustomListAdapter;
 import listviewvolley.example.diastowo.listviewvolley.app.AppController;
 import listviewvolley.example.diastowo.listviewvolley.model.Movie;
 
 /**
  * Created by Diastowo on 4/8/2016.
  */
-public class GridActivity extends Fragment {
+public class GridFragment extends Fragment {
 
-    private static final String TAG = ListActivity.class.getSimpleName();
+    private static final String TAG = ListFragment.class.getSimpleName();
 
     //movies json url
     private static final String  url = "http://api.androidhive.info/json/movies.json";
@@ -43,7 +41,7 @@ public class GridActivity extends Fragment {
     private GridView gridView;
     private CustomGridAdapter adapter;
 
-    public GridActivity (){
+    public GridFragment(){
 
     }
 
